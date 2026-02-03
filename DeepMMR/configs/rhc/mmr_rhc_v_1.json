@@ -1,0 +1,10 @@
+{
+    "learning_rate": 0.004070118542479798,
+    "l2_penalty": 5.354450718242595e-06,
+    "dropout_prob": 0.3897815480519029,
+    "network_depth": 9.0,
+    "network_width": 34.0,
+    "n_epochs": 200,
+    "batch_size": 100,
+    "loss_name": "V_statistic"
+}
