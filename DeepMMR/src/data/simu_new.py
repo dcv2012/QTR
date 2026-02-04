@@ -8,9 +8,7 @@ from data_generate import origin_para_set, adjust_para_set_for_new_coding, data_
 # get new parameter set for A in {-1,1}
 new_para_set = adjust_para_set_for_new_coding(origin_para_set)
 
-
-
-def generate_data(n_sample: int, scenario: str):
+def generate_data(n_sample: int, scenario: str = 'S1'):
     data = data_gen(n_sample, new_para_set)
     Y0_arr = np.array(data['Y0'])   # X
     A1_arr = np.array(data['A1'])
@@ -27,7 +25,7 @@ def generate_data(n_sample: int, scenario: str):
     
     return (A1_arr.reshape(-1, 1), 
             W1_arr.reshape(-1, 1), 
-            Y0_arr,
+            Y0_arr.reshape(-1, 1),
             Y1_arr.reshape(-1, 1),
             Z1_arr.reshape(-1, 1),
             Ep,En)
@@ -35,8 +33,9 @@ def generate_data(n_sample: int, scenario: str):
 
 
 # Generate training data
-def generate_train_simulation_q(n_sample: int, scenario: str, **kwargs):
+def generate_train_simulation_q(n_sample: int, scenario: str = 'S1', **kwargs):
     A1, W1, Y0, Y1, Z1, _, _ = generate_data(n_sample, scenario=scenario)
+    print(Y0.shape)
     A1_target = np.zeros(n_sample) # all set to -1
     return MMRTrainDataSet_q(treatment=A1,
                              treatment_target=A1_target,
@@ -56,4 +55,8 @@ def generate_test_simulation_q(n_sample: int, scenario: str, **kwargs):
                            structural=[E1, E0])
     
 
+if __name__ == "__main__":
+    # A1, W1, Y0, Y1, Z1, EP, EN = generate_data(100000, scenario='S1')
+    mtd = generate_train_simulation_q(1000, scenario='S1')
+    print(type(mtd))
     

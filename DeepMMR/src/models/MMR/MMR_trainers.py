@@ -20,8 +20,17 @@ from src.models.MMR.MMR_model import MLP_for_MMR
 from src.models.MMR.kernel_utils import calculate_kernel_matrix
 
 
+
 class EarlyStopping:
     def __init__(self, patience=20, delta=1e-4):
+        """
+        初始化早停机制。
+        
+        参数:
+        - patience (int): 允许验证损失不改善的最大轮数。
+        - delta (float): 改善阈值，小于此值视为无改善。
+        """
+        
         self.patience = patience
         self.delta = delta
         self.counter = 0
@@ -29,6 +38,20 @@ class EarlyStopping:
         self.early_stop = False
 
     def __call__(self, val_loss):
+        """
+        调用早停检查。
+        
+        参数:
+        - val_loss (float): 当前验证损失。
+        
+        返回:
+        - 无。
+        
+        功能:
+        - 更新最佳分数和计数器。
+        - 如果无改善达到耐心值，设置 early_stop 为 True。
+        """
+        
         score = -val_loss
         if self.best_score is None:
             self.best_score = score
@@ -43,19 +66,53 @@ class EarlyStopping:
 
 class MMR_Trainer_Simulation:
     def __init__(self, train_params: Dict[str, Any], random_seed: int):
+        """
+        初始化模拟数据训练器。
+        
+        参数:
+        - train_params (Dict[str, Any]): 训练参数字典，包括 n_epochs、batch_size 等。
+        - random_seed (int): 随机种子。
+        """
+        
         self.train_params = train_params
         self.n_epochs = train_params['n_epochs']
         self.batch_size = train_params['batch_size']
-        self.gpu_flg = torch.cuda.is_available()
         self.l2_penalty = train_params['l2_penalty']
         self.learning_rate = train_params['learning_rate']
         self.loss_name = train_params['loss_name']
+        self.gpu_flg = torch.cuda.is_available()
 
 
     def compute_kernel(self, kernel_inputs):
+        """
+        计算核矩阵。
+        
+        参数:
+        - kernel_inputs (torch.Tensor): 核输入数据。
+        
+        返回:
+        - torch.Tensor: 高斯核矩阵。
+        """
+        
         return calculate_kernel_matrix(kernel_inputs)
     
     def train(self, train_t: MMRTrainDataSetTorch_q, val_t: MMRTrainDataSetTorch_q):
+        """
+        训练 MMR 模型。
+        
+        参数:
+        - train_t (MMRTrainDataSetTorch_q): 训练集。
+        - val_t (MMRTrainDataSetTorch_q): 验证集。
+        
+        返回:
+        - tuple: (最佳验证损失, 训练好的模型)。
+        
+        功能:
+        - 初始化模型、优化器和调度器。
+        - 执行批次训练，使用 MMR_loss 计算损失。
+        - 应用早停和学习率调度。
+        """
+        
         input_size = 1 + train_t.backdoor.shape[1]
         model = MLP_for_MMR(input_dim=input_size, train_params=self.train_params)
     
@@ -76,7 +133,7 @@ class MMR_Trainer_Simulation:
         train_dataset = TensorDataset(train_a, train_w, train_x, train_y, train_z, train_tt)
         train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
     
-        early_stopping = EarlyStopping(patience=20,delta=1e-4)
+        early_stopping = EarlyStopping(patience=20, delta=1e-4)
         best_model_state = None
         best_val_loss = float('inf')
     
@@ -134,8 +191,21 @@ class MMR_Trainer_Simulation:
 
     @staticmethod
     def predict(model, test_data_t: MMRTestDataSetTorch_q):
-        device = next(model.parameters()).device  # 获取模型设备
+        """
+        使用训练好的模型进行预测。
         
+        参数:
+        - model (nn.Module): 训练好的 MMR 模型。
+        - test_data_t (MMRTestDataSetTorch_q): 测试集。
+        
+        返回:
+        - torch.Tensor: 预测结果。
+        
+        功能:
+        - 拼接输入数据，运行模型推理。
+        """
+        
+        device = next(model.parameters()).device  # 获取模型设备
         intervention_array_len = 1
         n_samples = test_data_t.treatment_proxy.shape[0]
         tempZ = test_data_t.treatment_proxy.to(device) #to

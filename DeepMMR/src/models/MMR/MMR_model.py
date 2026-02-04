@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 
 
+
 class MLP_for_MMR(nn.Module):
     def __init__(self, input_dim, train_params):
         super(MLP_for_MMR, self).__init__()

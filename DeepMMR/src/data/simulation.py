@@ -4,6 +4,8 @@ from scipy.stats import norm, multivariate_normal, uniform, randint
 from src.data.data_class import MMRTrainDataSet_h, MMRTestDataSet_h
 from src.data.data_class import MMRTrainDataSet_q, MMRTestDataSet_q
 
+
+
 def generate_data(n_sample: int, scenario: str):
     GammaX = np.array([0.25, 0.25])
     SigmaX = np.array([[0.25**2, 0],[0, 0.25**2]])
@@ -158,7 +160,7 @@ def generate_test_simulation_q(n_sample: int, scenario: str, **kwargs):
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # A, W, X, Y, Z, E1, E0 = generate_data(1000000, scenario='S1')
     # A, W, X, Y, Z, E1, E0 = generate_data(1000000, scenario='S2')
     # A, W, X, Y, Z, E1, E0 = generate_data(1000000, scenario='S3')
@@ -166,4 +168,3 @@ if __name__ == "__main__":
     # A, W, X, Y, Z, E1, E0 = generate_data(1000000, scenario='S5')
     # A, W, X, Y, Z, E1, E0 = generate_data(1000000, scenario='S6')
     # print(E1, E0)
-    pass
