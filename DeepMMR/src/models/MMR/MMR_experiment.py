@@ -66,7 +66,7 @@ def run_mmr_experiments(num_runs: int, scenario: str, kind: str, n_train: int, n
         
         train_data_0 = MMRTrainDataSet_q(
             treatment=train_data.treatment,
-            treatment_target=(train_data.treatment == 0),
+            treatment_target=(train_data.treatment == -1), #0 -> -1
             treatment_proxy=train_data.treatment_proxy,
             outcome_proxy=train_data.outcome_proxy,
             outcome=train_data.outcome,
@@ -76,7 +76,7 @@ def run_mmr_experiments(num_runs: int, scenario: str, kind: str, n_train: int, n
         
         val_data_0 = MMRTrainDataSet_q(
             treatment=val_data.treatment,
-            treatment_target=(val_data.treatment == 0),
+            treatment_target=(val_data.treatment == -1), #0 -> -1
             treatment_proxy=val_data.treatment_proxy,
             outcome_proxy=val_data.outcome_proxy,
             outcome=val_data.outcome,
@@ -115,12 +115,12 @@ def run_mmr_experiments(num_runs: int, scenario: str, kind: str, n_train: int, n
         
         
         res1 = test_data_t.outcome.squeeze(-1) * pred1.squeeze(-1) * (test_data_t.treatment.reshape(-1) == torch.ones(test_data_t.treatment.shape[0])).float()
-        res0 = test_data_t.outcome.squeeze(-1) * pred0.squeeze(-1) * (test_data_t.treatment.reshape(-1) == torch.zeros(test_data_t.treatment.shape[0])).float()
+        res0 = test_data_t.outcome.squeeze(-1) * pred0.squeeze(-1) * (test_data_t.treatment.reshape(-1) == -torch.ones(test_data_t.treatment.shape[0])).float() # 0 -> -1 
         res = [res1.mean().item() , res0.mean().item()]
         
         with open(file_path, mode='a', newline='') as f:
                 writer = csv.writer(f)
-                writer.writerow([f'DeepMMR_{kind}'] + res)
+                writer.writerow([f'DeepMMR_{kind}_mod'] + res)
         
 
 

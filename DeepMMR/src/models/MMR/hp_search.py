@@ -47,10 +47,10 @@ def hp_search_simulation(num_runs: int, scenario: str, kind: str, treatment: int
             backdoor=val_data.backdoor
         )
         val_data_t = MMRTrainDataSetTorch_q.from_numpy(val_data)
-    elif treatment == -1: #-1
+    elif treatment == -1: #0 -> -1
         train_data = MMRTrainDataSet_q(
             treatment=train_data.treatment,
-            treatment_target=(train_data.treatment == -1),
+            treatment_target=(train_data.treatment == -1), #0 -> -1
             treatment_proxy=train_data.treatment_proxy,
             outcome_proxy=train_data.outcome_proxy,
             outcome=train_data.outcome,
@@ -109,7 +109,7 @@ def hp_search_simulation(num_runs: int, scenario: str, kind: str, treatment: int
     })
 
     # output file path
-    output_file_path = output_dir / f'mmr_{scenario.lower()}_{kind.lower()}_{treatment}.json'
+    output_file_path = output_dir / f'mmr_{scenario.lower()}_{kind.lower()}_{int((treatment+1)/2)}.json'  #-1 ->0, 1 -> 1
     with open(output_file_path, 'w') as f:
         json.dump(best_params_converted, f, indent=4)
 

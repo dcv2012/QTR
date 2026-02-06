@@ -202,7 +202,7 @@ class MMR_Trainer_Simulation:
         - torch.Tensor: 预测结果。
         
         功能:
-        - 拼接输入数据，运行模型推理。
+        - 拼接输入数据，运行模型。
         """
         
         device = next(model.parameters()).device  # 获取模型设备
