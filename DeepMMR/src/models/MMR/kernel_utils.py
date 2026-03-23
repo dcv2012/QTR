@@ -59,3 +59,5 @@ if __name__ == "__main__":
     K_full = calculate_kernel_matrix(data)
     K_batched = calculate_kernel_matrix_batched(data, (0, 100))
     print(K_full.shape)
+    
+# buyonggai

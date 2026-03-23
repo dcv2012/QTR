@@ -39,3 +39,5 @@ class MLP_for_MMR(nn.Module):
         x = self.layer_list[-1](x)
         x = torch.nn.functional.softplus(x)
         return x
+    
+#buyonggai    

@@ -2,7 +2,7 @@ from src.models.MMR.kernel_utils import calculate_kernel_matrix_batched
 
 
 
-def MMR_loss(model_output, target, kernel_matrix, loss_name: str):  # batch_indices=None):
+def MMR_loss(model_output, target, kernel_matrix, loss_name: str):  # batch_indices=None:
     """
     计算 MMR 损失函数。
     
@@ -33,6 +33,7 @@ def MMR_loss(model_output, target, kernel_matrix, loss_name: str):  # batch_indi
         loss = (residual.T @ K @ residual) / (n ** 2)
     else:
         raise ValueError(f"{loss_name} is not valid. Must be 'U_statistic' or 'V_statistic'.")
+    
     return loss
         
 
@@ -73,3 +74,5 @@ def MMR_loss_batched(model_output, propensity_score, kernel_inputs, kernel, batc
         temp_loss = residual[i:(i+batch_size)].T @ partial_kernel_matrix @ residual / factor
         loss += temp_loss[0, 0]
     return loss
+
+# buyonggai

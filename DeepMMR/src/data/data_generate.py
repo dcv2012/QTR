@@ -2,6 +2,10 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm, multivariate_normal, uniform, randint
 import scipy.stats as stats
+from src.utils.setseed import set_seed
+
+set_seed(20048)
+
 
 # 参数设置 (Parameter Setting)
 origin_para_set = {
